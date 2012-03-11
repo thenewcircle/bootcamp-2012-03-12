@@ -11,4 +11,6 @@ To clone:
 
 == Useful Links
 
+Generating app icons: http://android-ui-utils.googlecode.com/hg/asset-studio/dist/index.html[Android Asset Studio]
+
 Encrypting preference items: http://stackoverflow.com/questions/5858790/process-the-value-of-preference-before-save-in-android
