@@ -23,10 +23,10 @@
 
 # Generated code #
 ##################
-*/gen/*
-*/bin/*
-*/obj/*
-*/libs/*
+*/*/gen/*
+*/*/bin/*
+*/*/obj/*
+*/*/libs/*
 
 # Logs and databases #
 ######################
