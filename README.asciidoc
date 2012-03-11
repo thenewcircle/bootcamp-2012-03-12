@@ -1,0 +1,14 @@
+= Android Boot Camp Training
+
+12 March 2012
+
+*Ken Jones*, +<ken@marakana.com>+
+http://marakana.com[Marakana, Inc.]
+
+To clone:
+
+	git clone git://github.com/marakana/bootcamp-2012-03-12.git
+
+== Useful Links
+
+Encrypting preference items: http://stackoverflow.com/questions/5858790/process-the-value-of-preference-before-save-in-android
