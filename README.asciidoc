@@ -5,9 +5,23 @@
 *Ken Jones*, +<ken@marakana.com>+
 http://marakana.com[Marakana, Inc.]
 
-To clone:
+== Obtaining Course Materials
 
+. Using Git from Ken's local system:
++
+	git clone http://10.53.83.3/bootcamp.git
+
+. Using Git from GitHub:
++
 	git clone git://github.com/marakana/bootcamp-2012-03-12.git
+
+. Downloading a Zip archive from GitHub
++
+	http://github.com/marakana/bootcamp-2012-03-12
+
+. Copying files individually from Ken's local system:
++
+	http://10.53.83.3/bootcamp
 
 == Useful Links
 
