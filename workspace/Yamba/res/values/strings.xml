@@ -6,5 +6,8 @@
     <string name="activity_main_title">Status Update</string>
     <string name="button_update_text">Update Status</string>
     <string name="edit_msg_hint">Please enter a status update up to 140 characters</string>
+    <string name="post_status_success">Successfully posted message</string>
+    <string name="post_status_fail">Failed to post message</string>
+    <string name="some_string_value">Some string value</string>
 
 </resources>
