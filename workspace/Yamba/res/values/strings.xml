@@ -5,5 +5,6 @@
     <string name="app_name">Yamba</string>
     <string name="activity_main_title">Status Update</string>
     <string name="button_update_text">Update Status</string>
+    <string name="edit_msg_hint">Please enter a status update up to 140 characters</string>
 
 </resources>
