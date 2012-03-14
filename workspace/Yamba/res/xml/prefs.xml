@@ -6,7 +6,8 @@
         android:title="@string/pref_user_title" />
     <EditTextPreference
         android:key="PREF_PASSWORD"
-        android:title="@string/pref_password_title" />
+        android:title="@string/pref_password_title" 
+        android:password="true" />
     <EditTextPreference
         android:defaultValue="http://yamba.marakana.com/api"
         android:key="PREF_SITE_URL"

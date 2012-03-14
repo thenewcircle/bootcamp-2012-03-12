@@ -1,5 +1,6 @@
 package com.marakana.android.yamba;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -29,6 +30,8 @@ public class MainActivity extends FragmentActivity {
 		switch (id) {
 		case R.id.menu_preferences:
 			// Display the PrefsActivity
+			Intent intent = new Intent(this, PrefsActivity.class);
+			startActivity(intent);
 			Log.v(TAG, "Settings menu item selected");
 			return true;
 		default:
