@@ -9,5 +9,11 @@
     <string name="post_status_success">Successfully posted message</string>
     <string name="post_status_fail">Failed to post message</string>
     <string name="some_string_value">Some string value</string>
+    <string name="pref_user_title">User Name</string>
+    <string name="pref_password_title">Password</string>
+    <string name="pref_site_url_title">Site URL</string>
+    <string name="pref_site_url_summary">Enter the URL to access your blogging site</string>
+    <string name="menu_preferences_title">Settings</string>
+    <string name="menu_preferences_title_cond">Settings</string>
 
 </resources>
