@@ -10,7 +10,7 @@ public class TimelineHelper extends SQLiteOpenHelper {
 	private static final String TAG = "TimelineHelper";
 
 	private static final String DB_NAME = "timeline.db";
-	private static final int DB_VERSION = 3;
+	private static final int DB_VERSION = 1;
 	
 	public static final String T_TIMELINE = "timeline";
 	public static final String KEY_ID = BaseColumns._ID;
