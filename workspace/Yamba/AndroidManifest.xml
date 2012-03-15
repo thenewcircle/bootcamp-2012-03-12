@@ -17,6 +17,7 @@
 		</activity>
 		
 		<activity android:name="PrefsActivity" />
+		<service android:name="UpdaterService"></service>
 	</application>
 
 </manifest>

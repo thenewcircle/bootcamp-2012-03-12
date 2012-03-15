@@ -15,5 +15,11 @@
     <string name="pref_site_url_summary">Enter the URL to access your blogging site</string>
     <string name="menu_preferences_title">Settings</string>
     <string name="menu_preferences_title_cond">Settings</string>
+    <string name="menu_start_service_title">Start Timeline Updates</string>
+    <string name="menu_start_service_title_cond">Start Updates</string>
+    <string name="menu_stop_service_title">Stop Timeline Updates</string>
+    <string name="menu_stop_service_title_cond">Stop Updates</string>
+    <string name="menu_refresh_title">Refresh Timeline</string>
+    <string name="menu_refresh_title_cond">Refresh</string>
 
 </resources>

@@ -27,12 +27,18 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
+		Intent intent;
 		switch (id) {
 		case R.id.menu_preferences:
 			// Display the PrefsActivity
-			Intent intent = new Intent(this, PrefsActivity.class);
+			intent = new Intent(this, PrefsActivity.class);
 			startActivity(intent);
 			Log.v(TAG, "Settings menu item selected");
+			return true;
+		case R.id.menu_refresh:
+			// Start UpdaterService to refresh the timeline
+			intent = new Intent(this, UpdaterService.class);
+			startService(intent);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
