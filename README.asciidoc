@@ -9,7 +9,7 @@ http://marakana.com[Marakana, Inc.]
 
 . Using Git from Ken's local system:
 +
-	git clone http://10.53.83.103/bootcamp.git
+	git clone http://10.53.83.42/bootcamp.git
 
 . Using Git from GitHub:
 +
@@ -21,7 +21,7 @@ http://marakana.com[Marakana, Inc.]
 
 . Copying files individually from Ken's local system:
 +
-	http://10.53.83.103/bootcamp
+	http://10.53.83.42/bootcamp
 
 == Useful Links
 
