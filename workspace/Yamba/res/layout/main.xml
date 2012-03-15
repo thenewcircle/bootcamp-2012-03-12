@@ -12,11 +12,9 @@
         android:text="@string/activity_main_title"/>
 
     <fragment
-        android:id="@+id/compose_fragment"
-        android:name="com.marakana.android.yamba.ComposeFragment"
+        android:id="@+id/timeline_fragment"
+        android:name="com.marakana.android.yamba.TimelineFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        <!-- Preview: layout=@layout/compose_fragment -->
-    </fragment>
+        android:layout_height="match_parent" />
 
 </LinearLayout>
