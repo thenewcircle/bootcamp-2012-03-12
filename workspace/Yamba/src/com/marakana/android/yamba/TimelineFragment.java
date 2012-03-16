@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.format.DateUtils;
 import android.view.Menu;
@@ -13,12 +16,13 @@ import android.view.View;
 import android.widget.TextView;
 
 public class TimelineFragment extends ListFragment
-				implements SimpleCursorAdapter.ViewBinder {
+				implements SimpleCursorAdapter.ViewBinder,
+				LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final String[] FROM = {
-		TimelineHelper.KEY_USER,
-		TimelineHelper.KEY_CREATED_AT,
-		TimelineHelper.KEY_MESSAGE
+		StatusProvider.KEY_USER,
+		StatusProvider.KEY_CREATED_AT,
+		StatusProvider.KEY_MESSAGE
 	};
 	
 	private static final int[] TO = {
@@ -27,7 +31,6 @@ public class TimelineFragment extends ListFragment
 		R.id.data_msg
 	};
 	
-	private Cursor mCursor;
 	private SimpleCursorAdapter mAdapter;
 
 	@Override
@@ -39,38 +42,24 @@ public class TimelineFragment extends ListFragment
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		YambaApplication app = YambaApplication.getInstance();
-		
-		// Query the Timeline database. Note that this blocks!
-		mCursor = app.getDb().query(TimelineHelper.T_TIMELINE,
-				null, null, null, null, null,
-				TimelineHelper.KEY_CREATED_AT + " desc");
 		
 		// Create an adapter mapping the cursor data to the layout
 		mAdapter = new SimpleCursorAdapter(getActivity(),
-				R.layout.timeline_row, mCursor, FROM, TO, 0);
+				R.layout.timeline_row, null, FROM, TO, 0);
 		mAdapter.setViewBinder(this);
 		
 		setListAdapter(mAdapter);
+		
+		// Initialize the cursor with the data
+		getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		mCursor.requery();
-		mAdapter.notifyDataSetChanged();
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		mCursor.deactivate();
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		mCursor.close();
+		
+		// Reset the cursor loader to get a new cursor.
+		getLoaderManager().restartLoader(0, null, this);
 	}
 
 	@Override
@@ -107,6 +96,24 @@ public class TimelineFragment extends ListFragment
 			return false;
 		}
 	}
-	
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		// We need to return a new loader.
+		return new CursorLoader(getActivity().getApplicationContext(),
+				StatusProvider.CONTENT_URI, null, null, null, null);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		// We've got a new cursor. Install it in the adapter.
+		mAdapter.swapCursor(cursor);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		// Release our reference to the cursor, without closing it.
+		mAdapter.swapCursor(null);
+	}
 	
 }

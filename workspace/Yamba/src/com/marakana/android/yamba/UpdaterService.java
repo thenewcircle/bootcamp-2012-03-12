@@ -8,7 +8,7 @@ import winterwell.jtwitter.TwitterException;
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
@@ -25,7 +25,6 @@ public class UpdaterService extends IntentService {
 		// Fetch timeline data
 		YambaApplication app = YambaApplication.getInstance();
 		try {
-			SQLiteDatabase db = app.getDb();
 			List<Twitter.Status> timeline = app.getTwitter().getHomeTimeline();
 			ContentValues values = new ContentValues();
 			
@@ -39,11 +38,17 @@ public class UpdaterService extends IntentService {
 				
 				// Try to insert the status into the Timeline database
 				values.clear();
-				values.put(TimelineHelper.KEY_ID, id);
-				values.put(TimelineHelper.KEY_USER, name);
-				values.put(TimelineHelper.KEY_MESSAGE, msg);
-				values.put(TimelineHelper.KEY_CREATED_AT, createdAt.getTime());
-				db.insert(TimelineHelper.T_TIMELINE, null, values);
+				values.put(StatusProvider.KEY_ID, id);
+				values.put(StatusProvider.KEY_USER, name);
+				values.put(StatusProvider.KEY_MESSAGE, msg);
+				values.put(StatusProvider.KEY_CREATED_AT, createdAt.getTime());
+				
+				// Insert the status in the StatusProvider
+				try {
+					getContentResolver().insert(StatusProvider.CONTENT_URI, values);
+				} catch (SQLException e) {
+					// Ignore, assuming that it's a duplicate row.
+				}
 			}
 		} catch (TwitterException e) {
 			Log.w(TAG, "Unable to fetch timeline data");
