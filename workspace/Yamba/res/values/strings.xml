@@ -20,5 +20,6 @@
     <string name="menu_compose_title_cond">New Status</string>
     <string name="menu_timeline_title">Show Timeline</string>
     <string name="menu_timeline_title_cond">Timeline</string>
+    <string name="perm_new_status_label">Receive Yamba new status notification</string>
 
 </resources>
