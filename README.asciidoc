@@ -14,7 +14,7 @@ Thanks!
 == Obtaining Course Materials
 
 You can either clone this Git repository:
-+
+
 	git clone git://github.com/marakana/bootcamp-2012-03-12.git
 
 or download a Zip archive by clicking the link above.
