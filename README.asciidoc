@@ -5,25 +5,25 @@
 *Ken Jones*, +<ken@marakana.com>+
 http://marakana.com[Marakana, Inc.]
 
+== Course Survey
+
+IMPORTANT: Please complete the Marakana class survey at: http://marakana.com/survey
+
+Thanks!
+
 == Obtaining Course Materials
 
-. Using Git from Ken's local system:
-+
-	git clone http://10.53.83.89/bootcamp.git
-
-. Using Git from GitHub:
+You can either clone this Git repository:
 +
 	git clone git://github.com/marakana/bootcamp-2012-03-12.git
 
-. Downloading a Zip archive from GitHub
-+
-	http://github.com/marakana/bootcamp-2012-03-12
-
-. Copying files individually from Ken's local system:
-+
-	http://10.53.83.89/bootcamp
+or download a Zip archive by clicking the link above.
 
 == Useful Links
+
+Android blogs that Ken follows in link:docs/android-blogs.opml[OPML format]
+
+_Professional Android 2 Application Development_, by Reto Meier: http://www.wrox.com/WileyCDA/WroxTitle/Professional-Android-Application-Development.productCd-0470565527.html
 
 Generating app icons: http://android-ui-utils.googlecode.com/hg/asset-studio/dist/index.html[Android Asset Studio]
 

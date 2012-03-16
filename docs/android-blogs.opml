@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="1.0">
+    <head>
+        <title>Ken Jones's Android blog subscriptions</title>
+    </head>
+    <body>
+        <outline title="Android" text="Android">
+            <outline text="Android Developers Blog"
+                title="Android Developers Blog" type="rss"
+                xmlUrl="http://feeds.feedburner.com/blogspot/hsDu" htmlUrl="http://android-developers.blogspot.com/"/>
+            <outline text="All Discussions - Simply Android"
+                title="All Discussions - Simply Android" type="rss"
+                xmlUrl="http://www.simply-android.com/discussions/feed.rss" htmlUrl="http://www.simply-android.com/discussions/feed.rss"/>
+            <outline text="android development blog"
+                title="android development blog" type="rss"
+                xmlUrl="http://www.androiddevblog.net/feed" htmlUrl="http://www.androiddevblog.net"/>
+            <outline text="Android Phone Fans"
+                title="Android Phone Fans" type="rss"
+                xmlUrl="http://phandroid.com/feed/" htmlUrl="http://phandroid.com"/>
+            <outline text="Android-er" title="Android-er" type="rss"
+                xmlUrl="http://android-er.blogspot.com/feeds/posts/default" htmlUrl="http://android-er.blogspot.com/"/>
+            <outline text="developerlife - Tutorials"
+                title="developerlife - Tutorials" type="rss"
+                xmlUrl="http://developerlife.com/tutorials/?feed=rss2" htmlUrl="http://developerlife.com/tutorials"/>
+            <outline text="Diego Torres Milano's blog"
+                title="Diego Torres Milano's blog" type="rss"
+                xmlUrl="http://feeds.feedburner.com/DiegoTorresMilanosBlog" htmlUrl="http://dtmilano.blogspot.com/"/>
+            <outline text="Enea Android Blog" title="Enea Android Blog"
+                type="rss"
+                xmlUrl="http://www.androidenea.com/feeds/posts/default" htmlUrl="http://www.androidenea.com/"/>
+            <outline text="Google Mobile Blog"
+                title="Google Mobile Blog" type="rss"
+                xmlUrl="http://googlemobile.blogspot.com/feeds/posts/default" htmlUrl="http://googlemobile.blogspot.com/"/>
+            <outline text="Hello Android" title="Hello Android"
+                type="rss" xmlUrl="http://www.helloandroid.com/rss.xml" htmlUrl="http://www.helloandroid.com"/>
+            <outline text="Jayway Team Blog" title="Jayway Team Blog"
+                type="rss" xmlUrl="http://blog.jayway.com/feed/" htmlUrl="http://blog.jayway.com"/>
+            <outline text="Mobiletuts+" title="Mobiletuts+" type="rss"
+                xmlUrl="http://mobile.tutsplus.com/feed/" htmlUrl="http://mobile.tutsplus.com"/>
+            <outline text="MOTODEV Blog articles"
+                title="MOTODEV Blog articles" type="rss"
+                xmlUrl="http://feeds.feedburner.com/MOTODEVBlog" htmlUrl="http://community.developer.motorola.com/t5/MOTODEV-Blog/bg-p/MOTODEV_Blog"/>
+            <outline text="My life with Android :-)"
+                title="My life with Android :-)" type="rss"
+                xmlUrl="http://mylifewithandroid.blogspot.com/feeds/posts/default" htmlUrl="http://mylifewithandroid.blogspot.com/"/>
+            <outline text="RootzWiki" title="RootzWiki" type="rss"
+                xmlUrl="http://rootzwiki.com/external.php?do=rss&amp;type=newcontent&amp;sectionid=1&amp;days=120&amp;count=10" htmlUrl="http://rootzwiki.com"/>
+            <outline text="SavageLook.com" title="SavageLook.com"
+                type="rss" xmlUrl="http://savagelook.com/blog/feed" htmlUrl="http://savagelook.com/blog"/>
+            <outline text="The CommonsBlog" title="The CommonsBlog"
+                type="rss"
+                xmlUrl="http://commonsware.com/blog/feed.atom" htmlUrl="http://www.google.com/reader/view/feed%2Fhttp%3A%2F%2Fcommonsware.com%2Fblog%2Ffeed.atom"/>
+            <outline text="The Radioactive Yak"
+                title="The Radioactive Yak" type="rss"
+                xmlUrl="http://feeds.feedburner.com/TheRadioactiveYak" htmlUrl="http://blog.radioactiveyak.com/"/>
+            <outline text="Tutorial For Android"
+                title="Tutorial For Android" type="rss"
+                xmlUrl="http://www.tutorialforandroid.com/feeds/posts/default" htmlUrl="http://www.tutorialforandroid.com/"/>
+        </outline>
+    </body>
+</opml>
