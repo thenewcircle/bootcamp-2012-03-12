@@ -24,6 +24,7 @@ public class UpdaterService extends IntentService {
 		Log.v(TAG, "onHandleIntent() invoked");
 		// Fetch timeline data
 		YambaApplication app = YambaApplication.getInstance();
+		int count = 0;
 		try {
 			List<Twitter.Status> timeline = app.getTwitter().getHomeTimeline();
 			ContentValues values = new ContentValues();
@@ -46,6 +47,7 @@ public class UpdaterService extends IntentService {
 				// Insert the status in the StatusProvider
 				try {
 					getContentResolver().insert(StatusProvider.CONTENT_URI, values);
+					count++;
 				} catch (SQLException e) {
 					// Ignore, assuming that it's a duplicate row.
 				}
