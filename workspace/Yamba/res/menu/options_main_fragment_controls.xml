@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_compose" android:showAsAction="ifRoom" android:title="@string/menu_compose_title" android:titleCondensed="@string/menu_compose_title_cond" android:icon="@android:drawable/ic_menu_edit"></item>
+    <item android:id="@+id/menu_timeline" android:showAsAction="ifRoom" android:title="@string/menu_timeline_title" android:titleCondensed="@string/menu_timeline_title_cond" android:icon="@drawable/menu_timeline"></item>
+    
+
+</menu>

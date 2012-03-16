@@ -30,6 +30,6 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/data_user"
         android:text="Message content"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium" android:autoLink="all"/>
 
 </RelativeLayout>

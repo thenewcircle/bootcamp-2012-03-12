@@ -21,5 +21,9 @@
     <string name="menu_stop_service_title_cond">Stop Updates</string>
     <string name="menu_refresh_title">Refresh Timeline</string>
     <string name="menu_refresh_title_cond">Refresh</string>
+    <string name="menu_compose_title">Compose New Status</string>
+    <string name="menu_compose_title_cond">New Status</string>
+    <string name="menu_timeline_title">Show Timeline</string>
+    <string name="menu_timeline_title_cond">Timeline</string>
 
 </resources>
