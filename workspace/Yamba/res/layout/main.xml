@@ -3,7 +3,14 @@
     android:id="@+id/fragment_container"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="5dp" >
+    android:orientation="vertical" android:padding="@dimen/padding_general">
+
+    <TextView
+        android:id="@+id/text_main_activity_title"
+        style="@style/activity_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_main_timeline_title"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

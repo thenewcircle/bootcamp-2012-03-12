@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";
@@ -26,11 +27,15 @@ public class MainActivity extends FragmentActivity {
 	private MenuItem mComposeMenuItem;
 	private MenuItem mTimelineMenuItem;
 	
+	private TextView mActivityTitle;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.v(TAG, "onCreate() invoked");
         setContentView(R.layout.main);
+        
+        mActivityTitle = (TextView) findViewById(R.id.text_main_activity_title);
         
         mFragmentManager = getSupportFragmentManager();
         
@@ -134,6 +139,10 @@ public class MainActivity extends FragmentActivity {
 			.show(mComposeFragment)
 			.commit();
     	mFragmentVisible = COMPOSE_FRAGMENT_VISIBLE;
+    	
+    	// Update activity title
+    	mActivityTitle.setText(R.string.activity_main_compose_title);
+    	
     	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
     		// Force refresh of action bar
     		invalidateOptionsMenu();
@@ -146,6 +155,10 @@ public class MainActivity extends FragmentActivity {
 			.show(mTimelineFragment)
 			.commit();
     	mFragmentVisible = TIMELINE_FRAGMENT_VISIBLE;
+    	
+    	// Update activity title
+    	mActivityTitle.setText(R.string.activity_main_timeline_title);
+    	
     	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
     		// Force refresh of action bar
     		invalidateOptionsMenu();
