@@ -26,7 +26,19 @@ public class UpdaterService extends IntentService {
 		YambaApplication app = YambaApplication.getInstance();
 		int count = 0;
 		try {
-			List<Twitter.Status> timeline = app.getTwitter().getHomeTimeline();
+			List<Twitter.Status> timeline;
+			try {
+				timeline = app.getTwitter().getHomeTimeline();
+			} catch (NullPointerException e) {
+				/*
+				 * I *really* hate to do this, but jTwitter seems to have a bug
+				 * that randomly throws NullPointerExceptions. When running the
+				 * UpdaterService frequently, you typically encounter it within
+				 * a couple of minutes. So, until we find and fix the bug in
+				 * the library, ignoring this exception is about our only choice. :-(
+				 */
+				return;
+			}
 			ContentValues values = new ContentValues();
 			
 			for (Twitter.Status status: timeline) {
@@ -57,6 +69,21 @@ public class UpdaterService extends IntentService {
 		} catch (SQLiteException e) {
 			Log.e(TAG, "Unable to open timeline database");
 		}
+		if (count > 0) {
+			newStatusNotification(count);
+		}
+	}
+	
+	private void newStatusNotification(int count) {
+		/*
+		 * Send broadcast intent announcing new status messages available.
+		 * Restrict it to "trusted" receivers whose application holds our custom
+		 * permission. Currently, this is just the Yamba application itself.
+		 */
+		
+		Intent broadcast = new Intent(YambaApplication.ACTION_NEW_STATUS);
+		broadcast.putExtra(YambaApplication.EXTRA_NEW_STATUS_COUNT, count);
+		sendBroadcast(broadcast, YambaApplication.RECEIVE_NEW_STATUS);
 	}
 	
 }

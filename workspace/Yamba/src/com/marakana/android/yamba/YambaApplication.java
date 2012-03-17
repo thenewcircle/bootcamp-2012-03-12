@@ -9,6 +9,13 @@ import android.util.Log;
 
 public class YambaApplication extends Application implements OnSharedPreferenceChangeListener {
 	private static final String TAG = "YambaApplication";
+	
+	public static final String ACTION_NEW_STATUS
+		= "com.marakana.android.yamba.ACTION_NEW_STATUS";
+	public static final String EXTRA_NEW_STATUS_COUNT
+		= "com.marakana.android.yamba.EXTRA_NEW_STATUS_COUNT";
+	public static final String RECEIVE_NEW_STATUS
+		= "com.marakana.android.yamba.permission.RECEIVE_NEW_STATUS";
 
 	private static YambaApplication instance;
 	

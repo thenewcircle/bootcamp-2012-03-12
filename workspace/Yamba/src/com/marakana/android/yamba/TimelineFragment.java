@@ -1,6 +1,9 @@
 package com.marakana.android.yamba;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -32,11 +35,19 @@ public class TimelineFragment extends ListFragment
 	};
 	
 	private SimpleCursorAdapter mAdapter;
+	
+	private TimelineReceiver mTimelineReceiver;
+	private IntentFilter mIntentFilter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+		
+		// Initialize the broadcast receiver and intent filter
+		// for receiving status update notifications.
+		mTimelineReceiver = new TimelineReceiver();
+		mIntentFilter = new IntentFilter(YambaApplication.ACTION_NEW_STATUS);
 	}
 
 	@Override
@@ -60,8 +71,27 @@ public class TimelineFragment extends ListFragment
 		
 		// Reset the cursor loader to get a new cursor.
 		getLoaderManager().restartLoader(0, null, this);
+		
+		/*
+		 * Request the activity register our broadcast receiver.
+		 * 
+		 * Restrict it to "trusted" senders whose application holds our custom
+		 * permission. Currently, this is just the Yamba application itself.
+		 */
+		getActivity().registerReceiver(mTimelineReceiver, mIntentFilter,
+				YambaApplication.RECEIVE_NEW_STATUS, null);
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		
+		// Request the activity unregister our broadcast receiver.
+		getActivity().unregisterReceiver(mTimelineReceiver);
 	}
 
+	// Options menu/action bar handling methods.
+	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.options_timeline_fragment, menu);
@@ -81,6 +111,8 @@ public class TimelineFragment extends ListFragment
 		}
 	}
 
+	// ViewBinder method implementation
+	
 	@Override
 	public boolean setViewValue(View v, Cursor cursor, int columnIndex) {
 		int id = v.getId();
@@ -96,6 +128,8 @@ public class TimelineFragment extends ListFragment
 			return false;
 		}
 	}
+	
+	// LoaderCallbacks method implementations
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -114,6 +148,23 @@ public class TimelineFragment extends ListFragment
 	public void onLoaderReset(Loader<Cursor> loader) {
 		// Release our reference to the cursor, without closing it.
 		mAdapter.swapCursor(null);
+	}
+	
+	// Method and broadcast receiver class for handling new status notifications.
+	
+	public void updateDisplay() {
+		getLoaderManager().restartLoader(0, null, this);
+	}
+	
+	private class TimelineReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// When we receive a new status notification,
+			// get an updated Cursor for the adapter.
+			updateDisplay();
+		}
+		
 	}
 	
 }
