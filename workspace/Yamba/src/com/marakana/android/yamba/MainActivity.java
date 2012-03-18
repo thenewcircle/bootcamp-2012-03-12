@@ -69,6 +69,19 @@ public class MainActivity extends FragmentActivity {
     }
 
 	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		
+		/*  
+		 * In our current implementation, the only time we should receive this is when the
+		 * the user acknowledges a Yamba new status notification when the activity is
+		 * already on screen. In case the ComposeFragment is currently displayed, let's
+		 * make the TimelineFragment visible.
+		 */
+		showTimelineFragment();
+	}
+
+	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		

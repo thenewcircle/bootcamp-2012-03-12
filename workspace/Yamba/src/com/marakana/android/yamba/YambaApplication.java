@@ -16,6 +16,8 @@ public class YambaApplication extends Application implements OnSharedPreferenceC
 		= "com.marakana.android.yamba.EXTRA_NEW_STATUS_COUNT";
 	public static final String RECEIVE_NEW_STATUS
 		= "com.marakana.android.yamba.permission.RECEIVE_NEW_STATUS";
+	public static final int NEW_STATUS_NOTIFICATION = 1;
+	public static final int SHOW_NEW_STATUS_PENDING_INTENT = 1;
 
 	private static YambaApplication instance;
 	

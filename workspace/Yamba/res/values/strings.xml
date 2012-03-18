@@ -21,5 +21,11 @@
     <string name="menu_timeline_title">Show Timeline</string>
     <string name="menu_timeline_title_cond">Timeline</string>
     <string name="perm_new_status_label">Receive Yamba new status notification</string>
-
+    <string name="notify_new_status_ticker_text">New Yamba status</string>
+    <string name="notify_new_status_content_title">New Yamba status</string>
+    
+    <plurals name="notify_new_status_content_text">
+        <item quantity="one">You have one new message</item>
+        <item quantity="other">You have %d new messages</item>
+    </plurals>
 </resources>

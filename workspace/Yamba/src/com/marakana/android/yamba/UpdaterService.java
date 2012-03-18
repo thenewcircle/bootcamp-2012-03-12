@@ -6,6 +6,9 @@ import java.util.List;
 import winterwell.jtwitter.Twitter;
 import winterwell.jtwitter.TwitterException;
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.SQLException;
@@ -84,6 +87,37 @@ public class UpdaterService extends IntentService {
 		Intent broadcast = new Intent(YambaApplication.ACTION_NEW_STATUS);
 		broadcast.putExtra(YambaApplication.EXTRA_NEW_STATUS_COUNT, count);
 		sendBroadcast(broadcast, YambaApplication.RECEIVE_NEW_STATUS);
+		
+		// Create and post a notification to the user.
+		
+		// We'll cheat and use the chat notification icon.
+		int icon = android.R.drawable.stat_notify_chat;
+		String tickerText = getString(R.string.notify_new_status_ticker_text);
+		long when = System.currentTimeMillis();
+		Notification notification = new Notification(icon, tickerText, when);
+		
+		// Extended status title and description
+		String contentTitle = getString(R.string.notify_new_status_content_title);
+		String contentText = getResources().getQuantityString(R.plurals.notify_new_status_content_text, count, count);
+		
+		// Pending intent to display the MainActivity
+		Intent showMessagesIntent = new Intent(this, MainActivity.class);
+		PendingIntent showMessagesPendingIntent
+			= PendingIntent.getActivity(this, YambaApplication.SHOW_NEW_STATUS_PENDING_INTENT,
+					showMessagesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		notification.setLatestEventInfo(this, contentTitle, contentText, showMessagesPendingIntent);
+		
+		// Automatically cancel the notification when the user selects it.
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		if (count > 1) {
+			// Add a badge if there are more than one new message.
+			notification.number = count;
+		}
+		
+		// Finally post the notification.
+		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		nm.notify(YambaApplication.NEW_STATUS_NOTIFICATION, notification);
 	}
 	
 }
