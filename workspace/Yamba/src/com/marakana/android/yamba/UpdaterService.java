@@ -9,8 +9,12 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
@@ -25,8 +29,11 @@ public class UpdaterService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		Log.v(TAG, "onHandleIntent() invoked");
-		// Fetch timeline data
+		
 		YambaApplication app = YambaApplication.getInstance();
+		ContentResolver resolver = getContentResolver();
+		
+		// Fetch timeline data
 		int count = 0;
 		try {
 			List<Twitter.Status> timeline;
@@ -61,7 +68,7 @@ public class UpdaterService extends IntentService {
 				
 				// Insert the status in the StatusProvider
 				try {
-					getContentResolver().insert(StatusProvider.CONTENT_URI, values);
+					resolver.insert(StatusProvider.CONTENT_URI, values);
 					count++;
 				} catch (SQLException e) {
 					// Ignore, assuming that it's a duplicate row.
@@ -73,23 +80,32 @@ public class UpdaterService extends IntentService {
 			Log.e(TAG, "Unable to open timeline database");
 		}
 		if (count > 0) {
-			newStatusNotification(count);
+			// Get the timestamp of the last status viewed.
+			SharedPreferences prefs = getSharedPreferences(YambaApplication.TIMELINE_STATE_PREFERENCES, Context.MODE_PRIVATE);
+			long lastViewedTimestamp = prefs.getLong(YambaApplication.PREF_LAST_VIEWED_TIMESTAMP, 0);
+			
+			// Find out how many statuses have been received since then.
+			Cursor cursor = resolver.query(StatusProvider.CONTENT_URI,
+							new String[]{ StatusProvider.KEY_CREATED_AT },
+							StatusProvider.KEY_CREATED_AT + " > " + lastViewedTimestamp,
+							null, null);
+			int unreadCount = cursor.getCount();
+			Log.v(TAG, "After inserts, unread count = " + unreadCount);
+			
+			// If any, post a status and send a broadcast message.
+			if (unreadCount > 0) {
+				newStatusNotification(unreadCount);
+				newStatusBroadcast(unreadCount);
+			}
 		}
 	}
 	
-	private void newStatusNotification(int count) {
-		/*
-		 * Send broadcast intent announcing new status messages available.
-		 * Restrict it to "trusted" receivers whose application holds our custom
-		 * permission. Currently, this is just the Yamba application itself.
-		 */
-		
-		Intent broadcast = new Intent(YambaApplication.ACTION_NEW_STATUS);
-		broadcast.putExtra(YambaApplication.EXTRA_NEW_STATUS_COUNT, count);
-		sendBroadcast(broadcast, YambaApplication.RECEIVE_NEW_STATUS);
-		
-		// Create and post a notification to the user.
-		
+	/**
+	 * Create and post a notification to the user.
+	 * 
+	 * @param unreadCount	Number of unread status messages.
+	 */
+	private void newStatusNotification(int unreadCount) {
 		// We'll cheat and use the chat notification icon.
 		int icon = android.R.drawable.stat_notify_chat;
 		String tickerText = getString(R.string.notify_new_status_ticker_text);
@@ -98,10 +114,15 @@ public class UpdaterService extends IntentService {
 		
 		// Extended status title and description
 		String contentTitle = getString(R.string.notify_new_status_content_title);
-		String contentText = getResources().getQuantityString(R.plurals.notify_new_status_content_text, count, count);
+		String contentText = getResources().getQuantityString(R.plurals.notify_new_status_content_text, unreadCount, unreadCount);
 		
-		// Pending intent to display the MainActivity
+		// Create a pending intent to display the MainActivity
 		Intent showMessagesIntent = new Intent(this, MainActivity.class);
+		
+		// If there are activities on top of MainActivity (such as PrefsActivity), clear them
+		// if the user navigates to MainActivity via the notification.
+		showMessagesIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		
 		PendingIntent showMessagesPendingIntent
 			= PendingIntent.getActivity(this, YambaApplication.SHOW_NEW_STATUS_PENDING_INTENT,
 					showMessagesIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -110,14 +131,28 @@ public class UpdaterService extends IntentService {
 		
 		// Automatically cancel the notification when the user selects it.
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		if (count > 1) {
-			// Add a badge if there are more than one new message.
-			notification.number = count;
+		
+		if (unreadCount > 1) {
+			// Add a badge if there are more than one unread message.
+			notification.number = unreadCount;
 		}
 		
 		// Finally post the notification.
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.notify(YambaApplication.NEW_STATUS_NOTIFICATION, notification);
+	}
+	
+	/**
+	 * Send a broadcast intent announcing new status messages available.
+	 * Restrict it to "trusted" receivers whose application holds our custom
+	 * permission. Currently, this is just the Yamba application itself.
+	 * 
+	 * @param unreadCount	Number of unread status messages.
+	 */
+	private void newStatusBroadcast(int unreadCount) {
+		Intent broadcast = new Intent(YambaApplication.ACTION_NEW_STATUS);
+		broadcast.putExtra(YambaApplication.EXTRA_NEW_STATUS_COUNT, unreadCount);
+		sendBroadcast(broadcast, YambaApplication.RECEIVE_NEW_STATUS);
 	}
 	
 }

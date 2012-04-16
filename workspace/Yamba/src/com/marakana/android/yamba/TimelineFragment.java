@@ -1,9 +1,11 @@
 package com.marakana.android.yamba;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -38,6 +40,9 @@ public class TimelineFragment extends ListFragment
 	
 	private TimelineReceiver mTimelineReceiver;
 	private IntentFilter mIntentFilter;
+	
+	private NotificationManager mNotificationManager;
+	private SharedPreferences mTimelineStatePrefs;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,10 @@ public class TimelineFragment extends ListFragment
 		// for receiving status update notifications.
 		mTimelineReceiver = new TimelineReceiver();
 		mIntentFilter = new IntentFilter(YambaApplication.ACTION_NEW_STATUS);
+		
+		mNotificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+		mTimelineStatePrefs = getActivity().getSharedPreferences(YambaApplication.TIMELINE_STATE_PREFERENCES, Context.MODE_PRIVATE);
 	}
 
 	@Override
@@ -69,9 +78,6 @@ public class TimelineFragment extends ListFragment
 	public void onResume() {
 		super.onResume();
 		
-		// Reset the cursor loader to get a new cursor.
-		getLoaderManager().restartLoader(0, null, this);
-		
 		/*
 		 * Request the activity register our broadcast receiver.
 		 * 
@@ -80,8 +86,20 @@ public class TimelineFragment extends ListFragment
 		 */
 		getActivity().registerReceiver(mTimelineReceiver, mIntentFilter,
 				YambaApplication.RECEIVE_NEW_STATUS, null);
+
+		// If visible, cancel any pending notification.
+		cancelNewStatusNotification();
+		
+		// And refresh with the latest data.
+		updateDisplay();
 	}
 	
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		// Cancel any pending notification if we become visible while in the "resumed" state.
+		cancelNewStatusNotification();
+	}
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -142,6 +160,15 @@ public class TimelineFragment extends ListFragment
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		// We've got a new cursor. Install it in the adapter.
 		mAdapter.swapCursor(cursor);
+		
+		// Persistently save the timestamp of the most recent status.
+		long timestamp = 0;
+		if (cursor.moveToFirst()) {
+			timestamp = cursor.getLong(cursor.getColumnIndex(StatusProvider.KEY_CREATED_AT));
+		}
+		mTimelineStatePrefs.edit()
+			.putLong(YambaApplication.PREF_LAST_VIEWED_TIMESTAMP, timestamp)
+			.apply();
 	}
 
 	@Override
@@ -150,9 +177,19 @@ public class TimelineFragment extends ListFragment
 		mAdapter.swapCursor(null);
 	}
 	
+	/**
+	 * Cancel any pending notification if we are currently visible and in the "resumed" state.
+	 */
+	private void cancelNewStatusNotification() {
+		if (isResumed() && !isHidden()) {
+			mNotificationManager.cancel(YambaApplication.NEW_STATUS_NOTIFICATION);
+		}
+	}
+	
 	// Method and broadcast receiver class for handling new status notifications.
 	
 	public void updateDisplay() {
+		// Reset the cursor loader to get a new cursor.
 		getLoaderManager().restartLoader(0, null, this);
 	}
 	
@@ -163,6 +200,7 @@ public class TimelineFragment extends ListFragment
 			// When we receive a new status notification,
 			// get an updated Cursor for the adapter.
 			updateDisplay();
+			cancelNewStatusNotification();
 		}
 		
 	}

@@ -14,11 +14,13 @@ import android.widget.TextView;
 public class MainActivity extends FragmentActivity {
 	private static final String TAG = "MainActivity";
 	
-	private static final int UNKNOWN_FRAGMENT_VISIBLE = -1;
 	private static final int COMPOSE_FRAGMENT_VISIBLE = 1;
 	private static final int TIMELINE_FRAGMENT_VISIBLE = 2;
 	private int mFragmentVisible;
 	private static final String FRAGMENT_VISIBLE = "FRAGMENT_VISIBLE";
+	
+	private boolean mDeferFragmentTransactions = true;
+	private boolean mDeferredFragmentTransaction = false;
 	
 	private ComposeFragment mComposeFragment;
 	private TimelineFragment mTimelineFragment;
@@ -45,32 +47,44 @@ public class MainActivity extends FragmentActivity {
         	mComposeFragment = new ComposeFragment();
         	mTimelineFragment = new TimelineFragment();
         	
-        	// Add the fragments to the layout, and hide the ComposeFragment.
+        	// Add the fragments to the layout.
         	mFragmentManager.beginTransaction()
-        	.add(R.id.fragment_container, mComposeFragment, "compose")
-        	.add(R.id.fragment_container, mTimelineFragment, "timeline")
-        	.hide(mComposeFragment)
-        	.commit();
-        	mFragmentVisible = TIMELINE_FRAGMENT_VISIBLE;
+	        	.add(R.id.fragment_container, mComposeFragment, "compose")
+	        	.add(R.id.fragment_container, mTimelineFragment, "timeline")
+	        	.commit();
+        	
+        	// Default to displaying the TimelineFragment.
+        	showFragment(TIMELINE_FRAGMENT_VISIBLE);
         }
         else {
         	// Activity bounced. Find the re-created fragments.
         	mComposeFragment = (ComposeFragment) mFragmentManager.findFragmentByTag("compose");
         	mTimelineFragment = (TimelineFragment) mFragmentManager.findFragmentByTag("timeline");
         	
-        	// Restore fragment visibility flag.
-        	mFragmentVisible = savedInstanceState.getInt(FRAGMENT_VISIBLE, UNKNOWN_FRAGMENT_VISIBLE);
-        	if (mFragmentVisible == UNKNOWN_FRAGMENT_VISIBLE) {
-        		// If for any reason we can't determine which fragment was visible,
-        		// default to the TimelineFragment.
-        		showTimelineFragment();
-        	}
+        	// Restore fragment visibility flag. If for any reason we can't determine
+        	// which fragment was visible, default to the TimelineFragment.
+        	showFragment( savedInstanceState.getInt(FRAGMENT_VISIBLE, TIMELINE_FRAGMENT_VISIBLE) );
         }
     }
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.v(TAG, "onStart() invoked");
+		
+		// It's now safe to commit fragment transactions, even in the case of a 
+		// run-time configuration change.
+		mDeferFragmentTransactions = false;
+		if (mDeferredFragmentTransaction) {
+			mDeferredFragmentTransaction = false;
+			updateFragmentVisibility();
+		}
+	}
+
+	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
+		Log.v(TAG, "onNewIntent() invoked");
 		
 		/*  
 		 * In our current implementation, the only time we should receive this is when the
@@ -78,7 +92,7 @@ public class MainActivity extends FragmentActivity {
 		 * already on screen. In case the ComposeFragment is currently displayed, let's
 		 * make the TimelineFragment visible.
 		 */
-		showTimelineFragment();
+		showFragment(TIMELINE_FRAGMENT_VISIBLE);
 	}
 
 	@Override
@@ -88,6 +102,9 @@ public class MainActivity extends FragmentActivity {
 		// Save fragment visibility state so that the action bar/options menu state
 		// can be restored.
 		outState.putInt(FRAGMENT_VISIBLE, mFragmentVisible);
+		
+		// Don't perform fragment transactions until it's once again safe to do so.
+		mDeferFragmentTransactions = true;
 	}
 
 	@Override
@@ -135,47 +152,56 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		case R.id.menu_compose:
 			// Show the ComposeFragment
-			showComposeFragment();
+			showFragment(COMPOSE_FRAGMENT_VISIBLE);
 			return true;
 		case R.id.menu_timeline:
 			// Show the TimelineFragment
-			showTimelineFragment();
+			showFragment(TIMELINE_FRAGMENT_VISIBLE);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 	
-	private void showComposeFragment() {
-		mFragmentManager.beginTransaction()
-			.hide(mTimelineFragment)
-			.show(mComposeFragment)
-			.commit();
-    	mFragmentVisible = COMPOSE_FRAGMENT_VISIBLE;
-    	
-    	// Update activity title
-    	mActivityTitle.setText(R.string.activity_main_compose_title);
-    	
-    	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-    		// Force refresh of action bar
-    		invalidateOptionsMenu();
-    	}
+	private void showFragment(int visibleFragment) {
+		mFragmentVisible = visibleFragment;
+		if (mDeferFragmentTransactions) {
+			// It's not safe to do a FragmentTransaction.commit() at this time.
+			mDeferredFragmentTransaction = true;
+		}
+		else {
+			updateFragmentVisibility();
+		}
 	}
 	
-	private void showTimelineFragment() {
-		mFragmentManager.beginTransaction()
-			.hide(mComposeFragment)
-			.show(mTimelineFragment)
-			.commit();
-    	mFragmentVisible = TIMELINE_FRAGMENT_VISIBLE;
-    	
-    	// Update activity title
-    	mActivityTitle.setText(R.string.activity_main_timeline_title);
+	private void updateFragmentVisibility() {
+		switch (mFragmentVisible) {
+		case COMPOSE_FRAGMENT_VISIBLE:
+			mFragmentManager.beginTransaction()
+				.hide(mTimelineFragment)
+				.show(mComposeFragment)
+				.commit();
+	    	
+	    	// Update activity title
+	    	mActivityTitle.setText(R.string.activity_main_compose_title);
+	    	
+			break;
+		default:
+			// Assume the TimelineFragment should be visible
+			mFragmentManager.beginTransaction()
+				.hide(mComposeFragment)
+				.show(mTimelineFragment)
+				.commit();
+	    	
+	    	// Update activity title
+	    	mActivityTitle.setText(R.string.activity_main_timeline_title);
+		}
     	
     	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
     		// Force refresh of action bar
     		invalidateOptionsMenu();
     	}
 	}
+
 }
 
